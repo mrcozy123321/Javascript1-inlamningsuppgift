@@ -1,0 +1,54 @@
+:root {
+  --clr-primary: #c7c7c7;
+  --clr-error: #db1010;
+  --clr-success: #14ac06;
+  --border-radius: 1rem;
+}
+
+.row .invalid-feedback {
+  margin-top: .3rem;
+  color: #db1010;
+  font-size: .9rem;
+  display: none;
+  /* visibility: hidden; */
+}
+
+.is-invalid .form-control {
+  border: 1px solid var(--clr-error);
+  outline: 1px solid var(--clr-error);
+}
+
+.is-invalid .invalid-feedback {
+  display: block;
+  /* visibility: visible; */
+}
+
+.is-valid .form-control {
+  border: 1px solid var(--clr-success);
+  outline: 1px solid var(--clr-success);
+}
+
+.fa-times-circle {
+  color: var(--clr-error);
+}
+
+.fa-check-circle {
+  color: var(--clr-success);
+}
+
+.fa-times-circle,
+.fa-check-circle {
+  position: absolute;
+  right: 0.5rem;
+  top: 2.3rem;
+  font-size: 1.1rem;
+  display: none;
+}
+
+.is-invalid .fa-times-circle {
+  display: block;
+}
+
+.is-valid .fa-check-circle {
+  display: block;
+}
