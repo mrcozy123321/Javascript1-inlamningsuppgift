@@ -6,26 +6,85 @@ const lName = document.querySelector('#lastName');
 const email = document.querySelector('#email');
 const tac = document.querySelector('#tac');
 const output = document.querySelector('#userList');
-const eUser = document.querySelector('#editUser');
-const rUser = document.querySelector('#removeUser');
 
 const listUsers = () => {
   output.innerHTML = '';
   userList.forEach(user => {
-    output.innerHTML += `
-      <div id="${user.id}" class="d-flex justify-content-between align-items-center border bg-white p-2 mb-2">
-        <div class="mx-3 row">
-          <p class="m-0 col-md-4">${user.fName}</p>
-          <p class="m-0 col-md-6">${user.lName}</p>
-          <small class="m-0 col-md-9">${user.email}</small>
-        </div>
-        <div class="mx-3">
-          <button class="btn btn-sm btn-primary mx-3" id="editUser">Edit</button>
-          <button class="btn btn-sm btn-danger mx-3" id="removeUser">X</button>
-        </div>
-      </div>
-    `
+    output.appendChild(createUserElement(user));
+    // output.innerHTML += `
+    //   <div id="${user.id}" class="d-flex justify-content-between align-items-center border bg-white p-2 mb-2">
+    //     <div class="mx-3 row">
+    //       <p class="m-0 col-md-4">${user.fName}</p>
+    //       <p class="m-0 col-md-6">${user.lName}</p>
+    //       <small class="m-0 col-md-9">${user.email}</small>
+    //     </div>
+    //     <div class="mx-3">
+    //       <button class="btn btn-sm btn-primary mx-3" id="editUser">Edit</button>
+    //       <button class="btn btn-sm btn-danger mx-3" id="removeUser">X</button>
+    //     </div>
+    //   </div>
+    // `
   })
+}
+
+const createUserElement = user => {
+
+  let card = document.createElement('div');
+  card.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'border', 'bg-white', 'p-2', 'mb-2');
+  card.id = user.id;
+
+  let textContainer = document.createElement('div');
+  textContainer.classList.add('mx-3', 'row');
+
+  let firstName = document.createElement('p');
+  firstName.classList.add('m-0', 'col-md-4');
+  firstName.innerText = user.fName;
+
+  let lastName = document.createElement('p');
+  lastName.classList.add('m-0', 'col-md-6');
+  lastName.innerText = user.lName;
+
+  let email = document.createElement('small');
+  email.classList.add('m-0', 'col-md-9');
+  email.innerText = user.email;
+
+  let buttonContainer = document.createElement('div');
+  buttonContainer.classList.add('mx-3');
+
+  let editButton = document.createElement('button');
+  editButton.classList.add('btn', 'btn-sm', 'btn-primary', 'mx-3');
+  editButton.innerText = 'Edit';
+
+  let removeButton = document.createElement('button');
+  removeButton.classList.add('btn', 'btn-sm', 'btn-danger', 'mx-3');
+  removeButton.innerText = 'X';
+
+  card.appendChild(textContainer);
+  textContainer.appendChild(firstName);
+  textContainer.appendChild(lastName);
+  textContainer.appendChild(email);
+  card.appendChild(buttonContainer);
+  buttonContainer.appendChild(editButton);
+  buttonContainer.appendChild(removeButton);
+
+  editButton.addEventListener('click', () => {
+    fetchUser(user.id)
+  })
+
+  removeButton.addEventListener('click', () => removeUser(user.id, card));
+
+  return card;
+}
+
+const fetchUser = async () => {
+  const res = await fetch(userList)
+  const data = await res.json();
+  userList = data;
+}
+
+function removeUser(id, user) {
+  userList = userList.filter(user => user.id !== id);
+  user.remove()
 }
 
 const validateText = (input) => {
@@ -95,10 +154,8 @@ const validate = input => {
 
 regForm.addEventListener('submit', e => {
   e.preventDefault();
-  // listUsers();
-  // validateText();
-  // validateEmail();
   errors = []
+
 
   for(let i = 0; i < regForm.length; i++) {
     errors[i] = validate(regForm[i]);
@@ -113,5 +170,10 @@ regForm.addEventListener('submit', e => {
     }
     userList.push(user);
     listUsers();
+    fName.value = '';
+    lName.value = '';
+    email.value = '';
+    tac.checked = false;
+
   }
 })
