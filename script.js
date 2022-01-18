@@ -1,4 +1,4 @@
-let userList = []
+let userList = [];
 
 const regForm = document.querySelector('#regForm');
 const fName = document.querySelector('#firstName');
@@ -11,19 +11,6 @@ const listUsers = () => {
   output.innerHTML = '';
   userList.forEach(user => {
     output.appendChild(createUserElement(user));
-    // output.innerHTML += `
-    //   <div id="${user.id}" class="d-flex justify-content-between align-items-center border bg-white p-2 mb-2">
-    //     <div class="mx-3 row">
-    //       <p class="m-0 col-md-4">${user.fName}</p>
-    //       <p class="m-0 col-md-6">${user.lName}</p>
-    //       <small class="m-0 col-md-9">${user.email}</small>
-    //     </div>
-    //     <div class="mx-3">
-    //       <button class="btn btn-sm btn-primary mx-3" id="editUser">Edit</button>
-    //       <button class="btn btn-sm btn-danger mx-3" id="removeUser">X</button>
-    //     </div>
-    //   </div>
-    // `
   })
 }
 
@@ -68,18 +55,46 @@ const createUserElement = user => {
   buttonContainer.appendChild(removeButton);
 
   editButton.addEventListener('click', () => {
-    fetchUser(user.id)
-  })
+    removeRegisterBtn();
+    let saveEdit = document.createElement('button');
+    saveEdit.classList.add('btn', 'btn-primary', 'saveBtn');
+    saveEdit.id = 'saveBtn';
+    saveEdit.innerText = 'Save';
+    let saveEditContainer = document.getElementById('regBtn-container');
+    saveEditContainer.appendChild(saveEdit);
+    
+    fetchUser();
+    console.log(user)
+  });
 
-  removeButton.addEventListener('click', () => removeUser(user.id, card));
+removeButton.addEventListener('click', () => removeUser(user.id, card));
 
-  return card;
+return card;
 }
 
-const fetchUser = async () => {
-  const res = await fetch(userList)
-  const data = await res.json();
-  userList = data;
+// const fetchUser = () => {
+//   userList.user = 
+// }
+
+function editUser(user) {
+  removeSaveBtn();
+  createRegBtn();
+}
+
+function createRegBtn() {
+  let register = document.createElement('button');
+  register.classList.add('btn', 'btn-primary');
+  register.innerText = 'Register';
+  let registerContainer = document.getElementById('regBtn-container');
+  registerContainer.appendChild(register);
+}
+
+function removeSaveBtn() {
+  document.getElementsByClassName('.saveBtn').remove('button');
+}
+
+function removeRegisterBtn() {
+  document.getElementById('regBtn').remove('button');
 }
 
 function removeUser(id, user) {
@@ -174,6 +189,8 @@ regForm.addEventListener('submit', e => {
     lName.value = '';
     email.value = '';
     tac.checked = false;
-
+    fName.parentElement.classList.remove('is-valid');
+    lName.parentElement.classList.remove('is-valid');
+    email.parentElement.classList.remove('is-valid');
   }
 })
