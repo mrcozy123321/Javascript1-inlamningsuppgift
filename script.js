@@ -54,7 +54,7 @@ const createUserElement = user => {
   buttonContainer.appendChild(editButton);
   buttonContainer.appendChild(removeButton);
 
-  editButton.addEventListener('click', () => {
+  editButton.addEventListener('click', e => {
     removeRegisterBtn();
     let saveEdit = document.createElement('button');
     saveEdit.classList.add('btn', 'btn-primary', 'saveBtn');
@@ -63,8 +63,11 @@ const createUserElement = user => {
     let saveEditContainer = document.getElementById('regBtn-container');
     saveEditContainer.appendChild(saveEdit);
     
-    fetchUser();
     console.log(user)
+    saveEdit.addEventListener('click', e => {
+      removeSaveBtn();
+      createRegBtn();
+    })
   });
 
 removeButton.addEventListener('click', () => removeUser(user.id, card));
@@ -72,25 +75,17 @@ removeButton.addEventListener('click', () => removeUser(user.id, card));
 return card;
 }
 
-// const fetchUser = () => {
-//   userList.user = 
-// }
-
-function editUser(user) {
-  removeSaveBtn();
-  createRegBtn();
-}
-
 function createRegBtn() {
   let register = document.createElement('button');
   register.classList.add('btn', 'btn-primary');
   register.innerText = 'Register';
+  register.id = 'regBtn';
   let registerContainer = document.getElementById('regBtn-container');
   registerContainer.appendChild(register);
 }
 
 function removeSaveBtn() {
-  document.getElementsByClassName('.saveBtn').remove('button');
+  document.getElementById('saveBtn').remove('button');
 }
 
 function removeRegisterBtn() {
@@ -104,12 +99,14 @@ function removeUser(id, user) {
 
 const validateText = (input) => {
 
-  if(input.value.trim() === '') {
-    setError(input, 'Name can\'t be empty');
+  let onlyLetters = /[^a-öA-Ö ]/g;
+
+  if(input.value.trim() === '' || input.value.trim().length < 2) {
+    setError(input, 'Please enter a name, name must be atleast 2 characters long');
     return false;
   }
-  else if(input.value.trim().length < 2) {
-    setError(input, 'Name must be atleast 2 characters long');
+  else if(input.value.match(onlyLetters)) {
+    setError(input, 'Name can only contain letters A-Ö ond lowecase a-ö');
     return false;
   }
   else{
@@ -125,6 +122,10 @@ const validateEmail = (email) => {
     setError(email, 'You need to enter a valid email address');
     return false;
   }
+  // else if(email.value.includes()) {
+  //   setError(email, 'Email address has already been registered')
+  //   return false;
+  // }
   else {
     setSuccess(email);
     return true;
