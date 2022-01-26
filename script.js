@@ -31,9 +31,9 @@ const createUserElement = user => {
   lastName.classList.add('m-0', 'col-md-6');
   lastName.innerText = user.lName;
 
-  let email = document.createElement('small');
-  email.classList.add('m-0', 'col-md-9');
-  email.innerText = user.email;
+  let _email = document.createElement('small');
+  _email.classList.add('m-0', 'col-md-9');
+  _email.innerText = user.email;
 
   let buttonContainer = document.createElement('div');
   buttonContainer.classList.add('mx-3');
@@ -49,7 +49,7 @@ const createUserElement = user => {
   card.appendChild(textContainer);
   textContainer.appendChild(firstName);
   textContainer.appendChild(lastName);
-  textContainer.appendChild(email);
+  textContainer.appendChild(_email);
   card.appendChild(buttonContainer);
   buttonContainer.appendChild(editButton);
   buttonContainer.appendChild(removeButton);
@@ -62,11 +62,39 @@ const createUserElement = user => {
     saveEdit.innerText = 'Save';
     let saveEditContainer = document.getElementById('regBtn-container');
     saveEditContainer.appendChild(saveEdit);
-    
+
+    fName.value = user.fName;
+    lName.value = user.lName;
+    email.value = user.email;
+
+
     console.log(user)
     saveEdit.addEventListener('click', e => {
+      errors = [];
+
+      for(let i = 0; i < regForm.length; i++) {
+        errors[i] = validate(regForm[i]);
+      }
+
+      if(!errors.includes(false)) {
+      user.fName = fName.value;
+      firstName.innerText = user.fName;
+      user.lName = lName.value;
+      lastName.innerText = user.lName;
+      user.email = email.value;
+      _email.innerText = user.email;
+
       removeSaveBtn();
       createRegBtn();
+
+      fName.value = '';
+      lName.value = '';
+      email.value = '';
+      tac.checked = false;
+      fName.parentElement.classList.remove('is-valid');
+      lName.parentElement.classList.remove('is-valid');
+      email.parentElement.classList.remove('is-valid');
+      }
     })
   });
 
@@ -122,10 +150,6 @@ const validateEmail = (email) => {
     setError(email, 'You need to enter a valid email address');
     return false;
   }
-  // else if(email.value.includes()) {
-  //   setError(email, 'Email address has already been registered')
-  //   return false;
-  // }
   else {
     setSuccess(email);
     return true;
