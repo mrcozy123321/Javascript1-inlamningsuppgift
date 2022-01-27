@@ -6,6 +6,7 @@ const lName = document.querySelector('#lastName');
 const email = document.querySelector('#email');
 const tac = document.querySelector('#tac');
 const output = document.querySelector('#userList');
+let change = false;
 
 const listUsers = () => {
   output.innerHTML = '';
@@ -54,8 +55,9 @@ const createUserElement = user => {
   buttonContainer.appendChild(editButton);
   buttonContainer.appendChild(removeButton);
 
-  editButton.addEventListener('click', e => {
+  editButton.addEventListener('click', () => {
     removeRegisterBtn();
+    change = true;
     let saveEdit = document.createElement('button');
     saveEdit.classList.add('btn', 'btn-primary', 'saveBtn');
     saveEdit.id = 'saveBtn';
@@ -67,9 +69,7 @@ const createUserElement = user => {
     lName.value = user.lName;
     email.value = user.email;
 
-
-    console.log(user)
-    saveEdit.addEventListener('click', e => {
+    saveEdit.addEventListener('click', () => {
       errors = [];
 
       for(let i = 0; i < regForm.length; i++) {
@@ -143,16 +143,30 @@ const validateText = (input) => {
   }
 }
 
+
+
 const validateEmail = (email) => {
   let regEx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
 
   if(email.value.trim() === '' || !regEx.test(email.value)) {
     setError(email, 'You need to enter a valid email address');
     return false;
   }
+  else if (userList.some(user => user.email === email.value)) {
+    if(change) {
+      setSuccess(email);
+      change = false;
+      return true;
+    }
+    else {
+      setError(email, 'Email address already exists');
+      return false;
+    }
+  }
   else {
-    setSuccess(email);
-    return true;
+      setSuccess(email);
+      return true;
   }
 }
 
